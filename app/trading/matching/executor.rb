@@ -153,17 +153,20 @@ module Matching
       order.funds_received += income_value
       order.trades_count   += 1
 
+
       if order.volume.zero?
         order.state = Order::DONE
-
         # Unlock not used funds.
         unless order.locked.zero?
           outcome_account.assign_attributes outcome_account.attributes_after_unlock_funds!(order.locked)
         end
+
       elsif order.ord_type == 'market' && order.locked.zero?
         # Partially filled market order has run out it's locked funds.
         order.state = Order::CANCEL
       end
+
+      order.trigger_pusher_event if trade.volume
     end
   end
 end

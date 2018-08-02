@@ -4,6 +4,7 @@
 module Worker
   class PusherMember
     def process(payload)
+      puts ['pusher_member', payload]
       return unless (sn = Member.where(id: payload['member_id']).pluck(:sn).first)
       event = payload['event']
       data  = payload['data']

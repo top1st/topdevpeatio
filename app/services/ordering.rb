@@ -20,7 +20,14 @@ class Ordering
   end
 
   def cancel
-    @orders.each(&method(:do_cancel))
+    cancel!
+    # @orders.each(&method(:do_cancel))
+
+    @orders.each do |order|
+      AMQPQueue.enqueue(:matching, action: 'cancel', order: order.to_matching_attributes)
+    end
+
+    true
   end
 
   def cancel!

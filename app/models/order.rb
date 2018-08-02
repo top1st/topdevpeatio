@@ -12,6 +12,9 @@ class Order < ActiveRecord::Base
   enumerize :ord_type, in: TYPES, scope: true
 
   after_commit(on: :create) { trigger_pusher_event }
+  # topdev editing...
+  after_commit(on: :update) { trigger_pusher_event }
+  
   before_validation :fix_number_precision, on: :create
 
   validates :ord_type, :volume, :origin_volume, :locked, :origin_locked, presence: true
